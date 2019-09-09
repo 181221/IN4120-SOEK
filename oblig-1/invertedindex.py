@@ -96,7 +96,6 @@ class InMemoryInvertedIndex(InvertedIndex):
 
         return corpus_doc_freq
 
-
     def _build_index(self, fields: Iterable[str]) -> None:
         token_seq = []
         for doc in self._corpus:
@@ -107,34 +106,35 @@ class InMemoryInvertedIndex(InvertedIndex):
 
         token_seq.sort(key=lambda el: el[1])
         freq_seq = collections.Counter(token_seq)
-        terms_in_token = []
+
         for i in range(len(token_seq)-1):
-            print(i)
             term = token_seq[i][1]
-            id = token_seq[i][0]
-            for j in range(i+1, len(token_seq)-1):
-                if term == token_seq[j][1] and id == token_seq[j][0]:
+            self._dictionary.add_if_absent(term)
+            doc_id = token_seq[i][0]
+            for j in range(i + 1, len(token_seq) - 1):
+                if term == token_seq[j][1] and doc_id == token_seq[j][0]:
                     token_seq.pop(i)
                     term = token_seq[j][1]
-                    id = token_seq[j][0]
+                    doc_id = token_seq[j][0]
                 else:
                     break
-
-        print(token_seq)
-        for i in range(len(token_seq) - 1):
-            postings = []
+        for i in range(len(token_seq)):
             term = token_seq[i][1]
-            posting = Posting(token_seq[i][0], freq_seq.get(token_seq[i]))
-            postings.append(posting)
-            for j in range(i+1, len(token_seq)-1):
-                if term == token_seq[j][1]:
-                    post = Posting(token_seq[j][0], freq_seq.get(token_seq[j]))
-                    postings.append(post)
-                else:
-                    break
-            self._posting_lists.append(postings)
-        for postings in self._posting_lists:
-            print(postings)
+            doc_id = token_seq[i][0]
+            term_id = self._dictionary.get_term_id(term)
+            lengden = len(self._posting_lists)
+            if term_id < lengden:
+                posting_list = self._posting_lists[term_id]
+                post = Posting(doc_id, freq_seq.get(token_seq[i]))
+                posting_list.append(post)
+            else:
+                posting_list = []
+                post = Posting(doc_id, freq_seq.get(token_seq[i]))
+                posting_list.append(post)
+                self._posting_lists.append(posting_list)
+
+        
+
 
     def get_terms(self, buffer: str) -> Iterator[str]:
         return (self._normalizer.normalize(t) for t in self._tokenizer.strings(self._normalizer.canonicalize(buffer)))

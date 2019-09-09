@@ -15,8 +15,15 @@ class Posting:
 
 
 token_seg = ["hei", 'hadet','123', '1234']
-
+list1 = []
+list1[0]
+list1.append([])
+list1.append([])
+list1.append([])
+print(list1)
 i = 0
 for token in token_seg[i:len(token_seg)-1]:
     j = i + 1
-    print(token)
+
+for i in range(token_seg):
+    print(token_seg[i])
