@@ -100,7 +100,7 @@ def assignment_a():
     assignment_a_inverted_index_1()
     assignment_a_inverted_index_2()
     assignment_a_postingsmerger_1()
-    #assignment_a_postingsmerger_2()
+    assignment_a_postingsmerger_2()
 
 
 def assignment_b():

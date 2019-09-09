@@ -136,8 +136,6 @@ class InMemoryInvertedIndex(InvertedIndex):
                 posting_list.append(post)
                 self._posting_lists.append(posting_list)
 
-
-
     def get_terms(self, buffer: str) -> Iterator[str]:
         return (self._normalizer.normalize(t) for t in self._tokenizer.strings(self._normalizer.canonicalize(buffer)))
 
