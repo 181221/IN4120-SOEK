@@ -96,62 +96,45 @@ class InMemoryInvertedIndex(InvertedIndex):
 
         return corpus_doc_freq
 
+
     def _build_index(self, fields: Iterable[str]) -> None:
-        print(fields)
-        list_col = []
+        token_seq = []
         for doc in self._corpus:
             for field in fields:
                 terms = self.get_terms(doc[field])
                 for term in terms:
-                    self._dictionary.add_if_absent(term)
-                list_col.append(collections.Counter(terms))
+                    token_seq.append((doc.document_id, term))
 
+        token_seq.sort(key=lambda el: el[1])
+        freq_seq = collections.Counter(token_seq)
+        terms_in_token = []
+        for i in range(len(token_seq)-1):
+            print(i)
+            term = token_seq[i][1]
+            id = token_seq[i][0]
+            for j in range(i+1, len(token_seq)-1):
+                if term == token_seq[j][1] and id == token_seq[j][0]:
+                    token_seq.pop(i)
+                    term = token_seq[j][1]
+                    id = token_seq[j][0]
+                else:
+                    break
 
-
-
-
-
-
-
-
-    """
-        def _build_index(self, fields: Iterable[str]) -> None:
-        term_docid_list = []
-        posting_list = []
-        for doc in self._corpus:
-            arr = []
-            for field in fields:
-                terms = self.get_terms(doc[field])
-                arr.append(doc[field])
-                col = collections.Counter(terms)
-                for value in col.values():
-                    posting_list.append(Posting(doc.document_id, value))
-
-            terms = []
-            for a in arr:
-                col = collections.Counter(self.get_terms(a))
-                terms.append(self.get_terms(a))
-            for term in terms:
-                col = collections.Counter(term.split(' '))
-                Posting(doc.document_id, col.get(term))
-
-            word_dict = {}
-            for term in terms:
-                word_dict[term] = doc.document_id
-            for key in word_dict:
-                term_docid_list.append((key, word_dict[key]))
-
-        term_docid_list.sort(key=lambda el: el[0])
-        for term in term_docid_list:
-            self._dictionary.add_if_absent(term[0])
-
-        for term in term_docid_list:
-            term_id = self._dictionary.get_term_id(term[0])
-            if term_id < len(self._posting_lists):
-                self._posting_lists[term_id].append(term[1])
-            else:
-                self._posting_lists.append([term[1]])
-    """
+        print(token_seq)
+        for i in range(len(token_seq) - 1):
+            postings = []
+            term = token_seq[i][1]
+            posting = Posting(token_seq[i][0], freq_seq.get(token_seq[i]))
+            postings.append(posting)
+            for j in range(i+1, len(token_seq)-1):
+                if term == token_seq[j][1]:
+                    post = Posting(token_seq[j][0], freq_seq.get(token_seq[j]))
+                    postings.append(post)
+                else:
+                    break
+            self._posting_lists.append(postings)
+        for postings in self._posting_lists:
+            print(postings)
 
     def get_terms(self, buffer: str) -> Iterator[str]:
         return (self._normalizer.normalize(t) for t in self._tokenizer.strings(self._normalizer.canonicalize(buffer)))

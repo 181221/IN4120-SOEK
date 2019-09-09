@@ -1,4 +1,6 @@
 import collections
+
+
 class Posting:
     """
     A very simple posting entry in a non-positional inverted index.
@@ -11,8 +13,10 @@ class Posting:
     def __repr__(self):
         return str({"document_id": self.document_id, "term_frequency": self.term_frequency})
 
-post = Posting(1,1)
-c = collections.Counter(["hei","hei", "test"])
-c.get()
-print(c)
-print("hei sann hadet".split(' '))
+
+token_seg = ["hei", 'hadet','123', '1234']
+
+i = 0
+for token in token_seg[i:len(token_seg)-1]:
+    j = i + 1
+    print(token)
