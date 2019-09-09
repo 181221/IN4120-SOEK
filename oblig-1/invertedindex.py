@@ -106,18 +106,21 @@ class InMemoryInvertedIndex(InvertedIndex):
 
         token_seq.sort(key=lambda el: el[1])
         freq_seq = collections.Counter(token_seq)
-
-        for i in range(len(token_seq)-1):
+        tokens_to_pop = []
+        for i in range(len(token_seq)):
             term = token_seq[i][1]
             self._dictionary.add_if_absent(term)
             doc_id = token_seq[i][0]
-            for j in range(i + 1, len(token_seq) - 1):
+            for j in range(i + 1, len(token_seq)-1):
                 if term == token_seq[j][1] and doc_id == token_seq[j][0]:
-                    token_seq.pop(i)
+                    tokens_to_pop.append(i)
                     term = token_seq[j][1]
                     doc_id = token_seq[j][0]
                 else:
                     break
+        for index in tokens_to_pop:
+            token_seq.pop(index)
+
         for i in range(len(token_seq)):
             term = token_seq[i][1]
             doc_id = token_seq[i][0]
@@ -133,7 +136,6 @@ class InMemoryInvertedIndex(InvertedIndex):
                 posting_list.append(post)
                 self._posting_lists.append(posting_list)
 
-        
 
 
     def get_terms(self, buffer: str) -> Iterator[str]:
