@@ -80,33 +80,19 @@ class InMemoryInvertedIndex(InvertedIndex):
     def __repr__(self):
         return str({term: self._posting_lists[term_id] for (term, term_id) in self._dictionary})
 
-    def _corpus_freq(self, term_docid_list):
-        corpus_doc_freq = {}
-        lengden = len(term_docid_list)
-
-        for i in range(lengden):
-            term = term_docid_list[i][0]
-            if term not in corpus_doc_freq:
-                corpus_doc_freq[term] = 1
-            if i < lengden:
-                j = i + 1
-                while j < lengden and term == term_docid_list[j][0]:
-                    j = j + 1
-                    corpus_doc_freq[term] = corpus_doc_freq[term] + 1
-
-        return corpus_doc_freq
-
     def _build_index(self, fields: Iterable[str]) -> None:
         token_seq = []
+        # for each doc add terms in field.
         for doc in self._corpus:
             for field in fields:
                 terms = self.get_terms(doc[field])
                 for term in terms:
                     token_seq.append((doc.document_id, term))
 
-        token_seq.sort(key=lambda el: el[1])
-        freq_seq = collections.Counter(token_seq)
+        token_seq.sort(key=lambda el: el[1])  # sort on terms
+        freq_seq = collections.Counter(token_seq)  # get frequency for each term in each document
         tokens_to_pop = []
+        # find index of duplicate. There is probably a better way to do this, but I am not familiar with python.
         for i in range(len(token_seq)):
             term = token_seq[i][1]
             self._dictionary.add_if_absent(term)
@@ -118,9 +104,10 @@ class InMemoryInvertedIndex(InvertedIndex):
                     doc_id = token_seq[j][0]
                 else:
                     break
+        # remove duplicate
         for index in tokens_to_pop:
             token_seq.pop(index)
-
+        # create postings list.
         for i in range(len(token_seq)):
             term = token_seq[i][1]
             doc_id = token_seq[i][0]

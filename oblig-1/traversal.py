@@ -46,9 +46,9 @@ class PostingsMerger:
         answers = []
         el1 = next(p1, None)
         el2 = next(p2, None)
-
+        # merge small list first than we do not have to check for each member of the large list.
+        # We can just add them to the list since they all are larger.
         while el1 is not None and el2 is not None:
-            print(el1, el2)
             while el1.document_id < el2.document_id:
                 answers.append(el1)
                 el1 = next(p1, None)
