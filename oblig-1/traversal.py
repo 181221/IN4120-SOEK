@@ -41,23 +41,26 @@ class PostingsMerger:
         The posting lists are assumed sorted in increasing order according
         to the document identifiers.
         """
-        answers = []
         el1 = next(p1, None)
         el2 = next(p2, None)
         # merge small list first than we do not have to check for each member of the large list.
         # We can just add them to the list since they all are larger.
         while el1 is not None and el2 is not None:
             while el1.document_id < el2.document_id:
-                answers.append(el1)
+                yield el1
                 el1 = next(p1, None)
-            answers.append(el2)
-            el2 = next(p2, None)
-        while el1 is not None:
-            answers.append(el1)
-            el1 = next(p1, None)
-        while el2 is not None:
-            answers.append(el2)
+                if el1 is None:
+                    break
+            yield el2
             el2 = next(p2, None)
 
-        return iter(answers)
+        while el1 is not None:
+            yield el1
+            el1 = next(p1, None)
+
+        while el2 is not None:
+            yield el2
+            el2 = next(p2, None)
+
+
 

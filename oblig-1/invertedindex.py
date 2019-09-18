@@ -81,47 +81,17 @@ class InMemoryInvertedIndex(InvertedIndex):
         return str({term: self._posting_lists[term_id] for (term, term_id) in self._dictionary})
 
     def _build_index(self, fields: Iterable[str]) -> None:
-        token_seq = []
-        # for each doc add terms in field.
         for doc in self._corpus:
+            counter = Counter()
             for field in fields:
-                terms = self.get_terms(doc[field])
-                for term in terms:
-                    token_seq.append((doc.document_id, term))
-
-        token_seq.sort(key=lambda el: el[1])  # sort on terms
-        freq_seq = collections.Counter(token_seq)  # get frequency for each term in each document
-        tokens_to_pop = []
-        # find index of duplicate. There is probably a better way to do this, but I am not familiar with python.
-        for i in range(len(token_seq)):
-            term = token_seq[i][1]
-            self._dictionary.add_if_absent(term)
-            doc_id = token_seq[i][0]
-            for j in range(i + 1, len(token_seq)-1):
-                if term == token_seq[j][1] and doc_id == token_seq[j][0]:
-                    tokens_to_pop.append(i)
-                    term = token_seq[j][1]
-                    doc_id = token_seq[j][0]
-                else:
-                    break
-        # remove duplicate
-        for index in tokens_to_pop:
-            token_seq.pop(index)
-        # create postings list.
-        for i in range(len(token_seq)):
-            term = token_seq[i][1]
-            doc_id = token_seq[i][0]
-            term_id = self._dictionary.get_term_id(term)
-            lengden = len(self._posting_lists)
-            if term_id < lengden:
-                posting_list = self._posting_lists[term_id]
-                post = Posting(doc_id, freq_seq.get(token_seq[i]))
-                posting_list.append(post)
-            else:
-                posting_list = []
-                post = Posting(doc_id, freq_seq.get(token_seq[i]))
-                posting_list.append(post)
-                self._posting_lists.append(posting_list)
+                counter = Counter(self.get_terms(doc[field]))
+            for word in counter:
+                term_id = self._dictionary.add_if_absent(word)
+                post = Posting(doc.document_id, counter.get(word))
+                try:
+                    self._posting_lists[term_id].append(post)
+                except IndexError:
+                    self._posting_lists.append([post])
 
     def get_terms(self, buffer: str) -> Iterator[str]:
         return (self._normalizer.normalize(t) for t in self._tokenizer.strings(self._normalizer.canonicalize(buffer)))
