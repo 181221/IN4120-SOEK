@@ -19,19 +19,17 @@ class PostingsMerger:
         The posting lists are assumed sorted in increasing order according
         to the document identifiers.
         """
-        answers = []
         el1 = next(p1, None)
         el2 = next(p2, None)
         while el1 is not None and el2 is not None:
             if el1.document_id == el2.document_id:
-                answers.append(el1)
+                yield el1
                 el1 = next(p1, None)
                 el2 = next(p2, None)
             elif el1.document_id < el2.document_id:
                 el1 = next(p1, None)
             else:
                 el2 = next(p2, None)
-        return iter(answers)
 
     @staticmethod
     def union(p1: Iterator[Posting], p2: Iterator[Posting]) -> Iterator[Posting]:

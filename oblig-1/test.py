@@ -1,4 +1,21 @@
-arr = [(0,'d'),(0,"c"),(0,"ce"),(0,"a"),(0,"b"),(1,'d'),(1,"c"),(1,"a"),(1,"b"), (1,"ce"),(2,'d'),(2,"c"),(2,"a"),(2,"b"), (2,"ce")]
+from typing import Iterator
 
-arr.sort(key=lambda el: el[1])
-print(arr)
+
+def intersection(p1: Iterator[str], p2: Iterator[str]) -> Iterator[str]:
+    el1 = next(p1, None)
+    el2 = next(p2, None)
+    while el1 is not None and el2 is not None:
+        if el1 == el2:
+            yield el1
+            el1 = next(p1, None)
+            el2 = next(p2, None)
+        elif el1 < el2:
+            el1 = next(p1, None)
+        else:
+            el2 = next(p2, None)
+
+
+test = intersection(iter(['a', 'b','c','d','e','f','i','k']), iter(['a', 'b', 'b', 'c','e','f','k']))
+
+for t in test:
+    print(t)
