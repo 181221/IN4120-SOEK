@@ -51,9 +51,14 @@ class PostingsMerger:
                 el1 = next(p1, None)
                 if el1 is None:
                     break
-            yield el2
-            el2 = next(p2, None)
-
+            if el1.document_id == el2.document_id:
+                yield el1
+                el1 = next(p1, None)
+                el2 = next(p2, None)
+            else:
+                yield el2
+                el2 = next(p2, None)
+                
         while el1 is not None:
             yield el1
             el1 = next(p1, None)
@@ -61,6 +66,5 @@ class PostingsMerger:
         while el2 is not None:
             yield el2
             el2 = next(p2, None)
-
 
 
