@@ -120,19 +120,22 @@ def assignment_e():
 
 
 def main():
+    import time
     tests = {"a": assignment_a,
              "b": assignment_b,
              "c": assignment_c,
              "d": assignment_d,
              "e": assignment_e}
     assignments = sys.argv[1:] or tests.keys()
+    start = time.time()
     for assignment in assignments:
         print("*** ASSIGNMENT", assignment.upper(), "***")
         tests[assignment.lower()]()
     print("*************************")
     print("*** ALL TESTS PASSED! ***")
     print("*************************")
-
+    end = time.time()
+    print(end-start)
 
 if __name__ == "__main__":
     main()

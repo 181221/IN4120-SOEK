@@ -9,6 +9,7 @@ from tokenization import Tokenizer
 from corpus import Corpus
 from collections import Counter
 from typing import Iterable, Iterator
+import time
 import collections
 
 class Posting:
@@ -85,6 +86,7 @@ class InMemoryInvertedIndex(InvertedIndex):
             counter = Counter()
             for field in fields:
                 counter = Counter(self.get_terms(doc[field]))
+
             for word in counter:
                 term_id = self._dictionary.add_if_absent(word)
                 post = Posting(doc.document_id, counter.get(word))
