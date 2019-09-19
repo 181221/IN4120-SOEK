@@ -85,8 +85,8 @@ class InMemoryInvertedIndex(InvertedIndex):
         for doc in self._corpus:
             counter = Counter()
             for field in fields:
-                counter = Counter(self.get_terms(doc[field]))
-
+                for term in self.get_terms(doc[field]):
+                    counter[term] += 1
             for word in counter:
                 term_id = self._dictionary.add_if_absent(word)
                 post = Posting(doc.document_id, counter.get(word))

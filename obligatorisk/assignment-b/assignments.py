@@ -61,6 +61,27 @@ def assignment_a_inverted_index_2():
         assert len(list(index[term])) == expected_length
 
 
+def assignment_a_inverted_index_3():
+    # tests that multiple fields are handled correctly
+
+    normalizer = BrainDeadNormalizer()
+    tokenizer = BrainDeadTokenizer()
+
+    doc = InMemoryDocument(document_id=0, fields={
+        'felt 1': 'Dette er en test. Test, sa jeg. TEST!',
+        'felt 2': 'test er det',
+        'felt 3': 'test TEsT',
+    })
+    corpus = InMemoryCorpus()
+    corpus.add_document(doc)
+
+    index = InMemoryInvertedIndex(corpus, ['felt 1', 'felt 3'], normalizer, tokenizer)
+    p = next(index.get_postings_iterator('test'))
+    print(f"term-freq: {p.term_frequency} (correct is 5)")
+    assert p.document_id == 0
+    assert p.term_frequency == 5
+
+
 def assignment_a_postingsmerger_1():
 
     # A small but real corpus.
@@ -122,6 +143,7 @@ def assignment_a_postingsmerger_3():
 def assignment_a():
     assignment_a_inverted_index_1()
     assignment_a_inverted_index_2()
+    assignment_a_inverted_index_3()
     assignment_a_postingsmerger_1()
     assignment_a_postingsmerger_2()
     assignment_a_postingsmerger_3()
