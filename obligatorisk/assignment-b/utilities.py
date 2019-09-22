@@ -71,6 +71,7 @@ def main():
     sieve = Sieve(3)
     sieve.sift(1.0, "one")
     sieve.sift(10.0, "ten")
+    sieve.sift(10.0, "ten")
     sieve.sift(9.0, "nine")
     sieve.sift(2.0, "two")
     sieve.sift(5.0, "five")

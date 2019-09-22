@@ -99,7 +99,9 @@ class StringFinder:
         support for leftmost-longest matching (instead of reporting all matches), and support for lemmatization
         or similar linguistic variations.
         """
-
+        words = buffer.split(' ')
+        for word in words:
+            self._trie.consume(word)
         raise NotImplementedError()
 
 

@@ -157,7 +157,7 @@ def assignment_b_suffixarray_1():
 
     # Prepare for some suffix array lookups.
     print("LOADING...")
-    corpus = InMemoryCorpus("./data/cran.xml")
+    corpus = InMemoryCorpus("../data/cran.xml")
     print("INDEXING...")
     engine = SuffixArray(corpus, ["body"], normalizer, tokenizer)
     results = []
@@ -323,7 +323,7 @@ def assignment_b_stringfinder():
 
 def assignment_b():
     k = "hei"
-    #assignment_b_suffixarray_1()
+    assignment_b_suffixarray_1()
     #assignment_b_suffixarray_2()
     #assignment_b_stringfinder()
 
@@ -346,7 +346,7 @@ def main():
              "c": assignment_c,
              "d": assignment_d,
              "e": assignment_e}
-    assignments = sys.argv[1:] or ["a"]
+    assignments = sys.argv[1:] or ["b"]
     for assignment in assignments:
         print("*** ASSIGNMENT", assignment.upper(), "***")
         tests[assignment.lower()]()
