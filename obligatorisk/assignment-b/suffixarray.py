@@ -90,16 +90,7 @@ class SuffixArray:
 
         hit = options.get('hit_count')
         sieve = Sieve(hit)
-        matches = []
-        counter = []
-        skip_indexes = []
         self.binarySearch(self._suffixes, 0, len(self._suffixes), query)
-       # for i in range(100):
-        #    string, doc_id = self.binarySearch(self._suffixes, 0, len(self._suffixes), query)
-
-
-
-        test = "hei"
 
     def binarySearch(self, arr, start, length, search_term):
         if length >= start:
@@ -107,21 +98,19 @@ class SuffixArray:
             suff = arr[mid]
             string = self.getSuffix(suff)
             match = re.match("^" + search_term + "\w*", string)
-            #match = re.search(search_term + "\w*", string)
             if match:
                 self.matches.append(string)
                 self.search(search_term, mid, start, length)
                 self._counter[match[0],suff[0]] += 1
-                return (match[0],suff[0])
+                return
             elif string > search_term:
                 return self.binarySearch(arr, start, mid - 1, search_term)
             else:
                 return self.binarySearch(arr, mid + 1, length, search_term)
         else:
-            # Element is not present in the array
             return -1
 
-    def search(self,pattern,mid,start, length):
+    def search(self, pattern, mid, start, length):
         r = mid + 1
         l = mid - 1
         suffix = self.getSuffixes()
