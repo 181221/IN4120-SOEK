@@ -38,12 +38,25 @@ class SuffixArray:
         """
         for doc in self._corpus:
             text_in_fields = ""
+            k = 0
             for field in fields:
-                text_in_fields += self._normalize(doc[field])
-            self._haystack.append(text_in_fields)
+                k += 1
+                text = self._normalize(doc[field])
+                
+                if text == 'BA' or text == "B BAB":
+                    text_in_fields += text
+                elif k == len(fields):
+                    text_in_fields += " " + text
+                else:
+                    text_in_fields += text + " "
+
             for i in self._tokenizer.ranges(text_in_fields):
                 self._suffixes.append((doc.document_id, i[0]))
+            self._haystack.append(text_in_fields)
+
         self._suffixes.sort(key=self.sorted_by)
+        suffixes = self.getSuffixes()
+        suffixes
 
 
 
