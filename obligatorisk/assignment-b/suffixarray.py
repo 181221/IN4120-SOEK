@@ -44,8 +44,7 @@ class SuffixArray:
             for i in self._tokenizer.ranges(text_in_fields):
                 self._suffixes.append((doc.document_id, i[0]))
         self._suffixes.sort(key=self.sorted_by)
-        suffix = self.getSuffixes()
-        suffix
+
 
     def getSuffixes(self):
         suffixes = []
@@ -87,21 +86,31 @@ class SuffixArray:
         The callback function supplied by the client will receive a dictionary having the keys "score" (int) and
         "document" (Document).
         """
+        if not query:
+            return
+        pattern = query.replace('  ',' ').lower()
 
         hit = options.get('hit_count')
         sieve = Sieve(hit)
-        self.binarySearch(self._suffixes, 0, len(self._suffixes), query)
+        self.binarySearch(self._suffixes, 0, len(self._suffixes), pattern)
+        for term, doc_id in self._counter:
+            freq = self._counter[(term, doc_id)]
+            sieve.sift(freq, doc_id)
+
+        for win in sieve.winners():
+            doc = self._corpus.get_document(win[1])
+            callback({'score': win[0], 'document': doc})
+        self._counter.clear()
 
     def binarySearch(self, arr, start, length, search_term):
         if length >= start:
             mid = int(start + (length - start) / 2)
             suff = arr[mid]
             string = self.getSuffix(suff)
-            match = re.match("^" + search_term + "\w*", string)
+            match = re.match("^" + search_term, string)
             if match:
-                self.matches.append(string)
+                self._counter[match[0], suff[0]] += 1
                 self.search(search_term, mid, start, length)
-                self._counter[match[0],suff[0]] += 1
                 return
             elif string > search_term:
                 return self.binarySearch(arr, start, mid - 1, search_term)
@@ -113,14 +122,11 @@ class SuffixArray:
     def search(self, pattern, mid, start, length):
         r = mid + 1
         l = mid - 1
-        suffix = self.getSuffixes()
-        suffix
-        while r < length:
+        while r <= length:
             suff = self._suffixes[r]
             string = self.getSuffix(suff)
-            match = re.match("^" + pattern + "\w*", string)
+            match = re.match("^" + pattern, string)
             if match:
-                self.matches.append(string)
                 self._counter[match[0], suff[0]] += 1
                 r += 1
             else:
@@ -128,9 +134,8 @@ class SuffixArray:
         while l > start:
             suff = self._suffixes[l]
             string = self.getSuffix(suff)
-            match = re.match("^" + pattern + "\w*", string)
+            match = re.match("^" + pattern, string)
             if match:
-                self.matches.append(string)
                 self._counter[match[0], suff[0]] += 1
                 l -= 1
             else:
