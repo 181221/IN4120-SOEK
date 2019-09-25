@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4e640db5-e677-4fcb-8fcb-264e83ff978f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ahocorasick.py" beforeDir="false" afterPath="$PROJECT_DIR$/ahocorasick.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assignments.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignments.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/suffixarray.py" beforeDir="false" afterPath="$PROJECT_DIR$/suffixarray.py" afterDir="false" />
     </list>
@@ -129,6 +130,8 @@
       <workItem from="1568984317347" duration="13203000" />
       <workItem from="1569070789123" duration="21885000" />
       <workItem from="1569156591634" duration="23787000" />
+      <workItem from="1569418428994" duration="1028000" />
+      <workItem from="1569427056339" duration="10248000" />
     </task>
     <task id="LOCAL-00001" summary="add ignore file">
       <created>1568886765753</created>
@@ -165,15 +168,22 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/ahocorasick.py</url>
-          <line>103</line>
-          <option name="timeStamp" value="1" />
+          <line>122</line>
+          <option name="timeStamp" value="92" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/assignment_b$normalization.coverage" NAME="normalization Coverage Results" MODIFIED="1569165830423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/assignment_b$utilities.coverage" NAME="utilities Coverage Results" MODIFIED="1569092368104" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/assignment_b$assignments.coverage" NAME="assignments Coverage Results" MODIFIED="1569192203459" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/assignment_b$assignments.coverage" NAME="assignments Coverage Results" MODIFIED="1569447594101" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

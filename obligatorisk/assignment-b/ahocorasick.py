@@ -99,10 +99,28 @@ class StringFinder:
         support for leftmost-longest matching (instead of reporting all matches), and support for lemmatization
         or similar linguistic variations.
         """
-        words = buffer.split(' ')
+        if not buffer:
+            return
+        words = self._tokenizer.strings(buffer)
+        matches = []
         for word in words:
-            self._trie.consume(word)
-        raise NotImplementedError()
+            match = self._trie.consume(word)
+            word_matches = word
+            rest_of_word_match = ''
+            hasReachDeapth = False
+            while match and len(match._children) > 0 and not hasReachDeapth:
+                for child in match._children:
+                    if not child == '':
+                        match = match._children.get(child)
+                        rest_of_word_match += child
+                    if len(match._children) == 1 and child == '':
+                        hasReachDeapth = True
+            if hasReachDeapth:
+                matches.append(word_matches)
+                if rest_of_word_match:
+                    matches.append(word_matches + rest_of_word_match)
+
+        matches
 
 
 def main():

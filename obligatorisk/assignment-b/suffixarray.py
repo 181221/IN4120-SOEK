@@ -118,7 +118,7 @@ class SuffixArray:
     def binarySearch(self, arr, start, length, search_term):
         if length >= start:
             mid = int(start + (length - start) / 2)
-            if(mid == length):
+            if mid == length:
                 return
             suff = arr[mid]
             string = self.getSuffix(suff)
