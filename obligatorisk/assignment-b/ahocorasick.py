@@ -102,23 +102,27 @@ class StringFinder:
         if not buffer:
             return
         words = self._tokenizer.strings(buffer)
+        #ranges = self._tokenizer.ranges(buffer)
+        #strings = self._tokenizer.strings(buffer)
         matches = []
         for word in words:
             match = self._trie.consume(word)
             word_matches = word
             rest_of_word_match = ''
             hasReachDeapth = False
-            while match and len(match._children) > 0 and not hasReachDeapth:
+            while match and not match.is_final() and len(match._children) > 0 and not hasReachDeapth:
                 for child in match._children:
-                    if not child == '':
+                    if not child == '' and match is not None:
                         match = match._children.get(child)
                         rest_of_word_match += child
-                    if len(match._children) == 1 and child == '':
+                    if match is not None and len(match._children) == 1 and child == '':
                         hasReachDeapth = True
             if hasReachDeapth:
                 matches.append(word_matches)
+                callback({'match': word_matches, 'tupple': (0, 0)})
                 if rest_of_word_match:
                     matches.append(word_matches + rest_of_word_match)
+                    callback({'match': word_matches + rest_of_word_match, 'tupple': (0, 0)})
 
         matches
 
