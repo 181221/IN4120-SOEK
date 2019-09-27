@@ -296,7 +296,7 @@ def assignment_b_stringfinder():
     results.clear()
     finder.scan(buffer, lambda m: results.append(m))
     print("Buffer \"" + buffer + "\" contains", results)
-    #assert [m["match"] for m in results] == ["norsk", "norsk ørret", "ørret", "romerike", "sverige"]
+    assert [m["match"] for m in results] == ["norsk", "norsk ørret", "ørret", "romerike", "sverige"]
 
     # Find all MeSH terms that occur verbatim in some selected Cranfield documents! Since MeSH
     # documents are medical terms and the Cranfield documents have technical content, the
@@ -322,9 +322,9 @@ def assignment_b_stringfinder():
 
 
 def assignment_b():
-    #assignment_b_suffixarray_1()
+    assignment_b_suffixarray_1()
     #assignment_b_suffixarray_2()
-    assignment_b_stringfinder()
+    #assignment_b_stringfinder()
 
 
 def assignment_c():

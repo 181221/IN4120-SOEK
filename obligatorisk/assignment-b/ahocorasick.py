@@ -101,38 +101,45 @@ class StringFinder:
         """
         if not buffer:
             return
-        words = self._tokenizer.strings(buffer)
-        #ranges = self._tokenizer.ranges(buffer)
-        #strings = self._tokenizer.strings(buffer)
-        matches = []
-        for word in words:
-            match = self._trie.consume(word)
-            word_matches = word
-            rest_of_word_match = ''
-            hasReachDeapth = False
-            while match and not match.is_final() and len(match._children) > 0 and not hasReachDeapth:
-                for child in match._children:
-                    if not child == '' and match is not None:
-                        match = match._children.get(child)
-                        rest_of_word_match += child
-                    if match is not None and len(match._children) == 1 and child == '':
-                        hasReachDeapth = True
-            if hasReachDeapth:
-                matches.append(word_matches)
-                callback({'match': word_matches, 'tupple': (0, 0)})
-                if rest_of_word_match:
-                    matches.append(word_matches + rest_of_word_match)
-                    callback({'match': word_matches + rest_of_word_match, 'tupple': (0, 0)})
+        ranges = self._tokenizer.ranges(buffer)
+        for ran in ranges:
+            word = buffer[ran[0]:ran[1]]
+            node = self._trie.consume(word)
+            if node:
+                word_match = node.is_final()
+                if word_match:
+                    callback({'match': word, 'tupple': ran})
+                #if len(node._children) > 0:                    # uncomment these lines for the first assert test to pass. This method looks for the next matches of a prefix
+                    #self.append_rest(node, word, callback, ran)
 
-        matches
+    def append_rest(self, node, word, callback, ran):
+        rest_of_match = []
+        for child in node._children:
+            child_node = node.consume(child)
+            if not child_node.is_final():
+                self.get_children(child_node, child, rest_of_match)
+        if len(rest_of_match) > 0:
+            callback({'match': word + ''.join(rest_of_match), 'tupple': ran})
 
+    def get_children(self, tree, child_word, matches):
+        if tree:
+            if tree.is_final():
+                matches.append(child_word)
+                return
+            has_more = len(tree._children) > 0
+            if has_more:
+                for child in tree._children:
+                    matches.append(child_word)
+                    return self.get_children(tree.consume(child), child, matches)
+        else:
+            return child_word
 
 def main():
     """
     Example usage. A tiny unit test, in a sense.
     """
     tokenizer = BrainDeadTokenizer()
-    strings = ["abba", "ørret", "abb", "abbab", "abbor"]
+    strings = ["abba", "norsk ørret", "abb", "abbab", "abbor"]
     trie = Trie()
     for s in strings:
         trie.add(s, tokenizer)
@@ -143,7 +150,6 @@ def main():
     node = node.consume("b")
     assert node.is_final() is True
     assert node == trie.consume("abb")
-
 
 if __name__ == "__main__":
     main()
