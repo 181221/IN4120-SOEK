@@ -113,7 +113,7 @@ class StringFinder:
                     tup = ranges[i]
                     next_word = buffer[tup[0]:tup[1]]
                     if self._next_node(next_word, node):
-                        callback({'match': word + next_word, 'tupple': (ran[0], tup[1])})
+                        callback({'match': word + ' ' + next_word, 'tupple': (ran[0], tup[1])})
             i += 1
 
     def _next_node(self, next_word, node):
