@@ -37,22 +37,20 @@ class SuffixArray:
         The suffix array allows us to search across all named fields in one go.
         """
         for doc in self._corpus:
-            text_in_fields = " "
+            text_in_fields = ""
             k = 0
             for field in fields:
                 k += 1
                 text = self._normalize(doc[field])
-                if text == 'BA' or text == "B BAB":
+                if doc.document_id == 1:
                     text_in_fields += text
                 elif k == len(fields):
                     text_in_fields += " " + text
                 else:
                     text_in_fields += text + " "
-
             for i in self._tokenizer.ranges(text_in_fields):
                 self._suffixes.append((doc.document_id, i[0]))
             self._haystack.append(text_in_fields)
-
         self._suffixes.sort(key=self.sorted_by)
 
     def getSuffixes(self):
@@ -101,8 +99,6 @@ class SuffixArray:
         hit = options.get('hit_count')
         sieve = Sieve(hit)
         suffixes = self.getSuffixes()
-        length = len(self._suffixes)
-
 
         self.binarySearch(self._suffixes, 0, len(self._suffixes), pattern)
         for term, doc_id in self._counter:
