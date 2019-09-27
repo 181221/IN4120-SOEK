@@ -155,7 +155,8 @@
       <workItem from="1569418428994" duration="1028000" />
       <workItem from="1569427056339" duration="14418000" />
       <workItem from="1569508386650" duration="85000" />
-      <workItem from="1569582488912" duration="7199000" />
+      <workItem from="1569582488912" duration="7806000" />
+      <workItem from="1569592493811" duration="5353000" />
     </task>
     <task id="LOCAL-00001" summary="add ignore file">
       <created>1568886765753</created>
@@ -191,9 +192,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/assignments.py</url>
-          <line>286</line>
-          <option name="timeStamp" value="125" />
+          <url>file://$PROJECT_DIR$/ahocorasick.py</url>
+          <line>112</line>
+          <option name="timeStamp" value="179" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ahocorasick.py</url>
+          <line>111</line>
+          <option name="timeStamp" value="180" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -209,6 +215,6 @@
     <SUITE FILE_PATH="coverage/assignment_b$normalization.coverage" NAME="normalization Coverage Results" MODIFIED="1569165830423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/assignment_b$ahocorasick.coverage" NAME="ahocorasick Coverage Results" MODIFIED="1569588611901" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/assignment_b$utilities.coverage" NAME="utilities Coverage Results" MODIFIED="1569092368104" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/assignment_b$assignments.coverage" NAME="assignments Coverage Results" MODIFIED="1569589026369" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/assignment_b$assignments.coverage" NAME="assignments Coverage Results" MODIFIED="1569597808014" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
