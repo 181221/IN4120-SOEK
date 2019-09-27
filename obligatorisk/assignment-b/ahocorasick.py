@@ -101,40 +101,28 @@ class StringFinder:
         """
         if not buffer:
             return
-        buffer = ",".join(self._tokenizer.strings(buffer))
+        buffer = " ".join(self._tokenizer.strings(buffer))
         ranges = self._tokenizer.ranges(buffer)
-
+        i = 1
         for ran in ranges:
             word = buffer[ran[0]:ran[1]]
             node = self._trie.consume(word)
             if node and node.is_final():
                 callback({'match': word, 'tupple': ran})
-                if len(node._children) > 1:
-                    self.append_rest(node, word, callback, ran, buffer)
+                if i < len(ranges):
+                    tup = ranges[i]
+                    next_word = buffer[tup[0]:tup[1]]
+                    rest = self._get_rest(next_word, node)
+                    if rest:
+                        callback({'match': word + next_word, 'tupple': (ran[0], tup[1])})
+            i += 1
 
-    def append_rest(self, node, word, callback, ran, buffer):
-        rest_of_match = []
-        for child in node._children:
-            child_node = node.consume(child)
-            if not child_node.is_final():
-                self.get_children(child_node, child, rest_of_match)
-        if len(rest_of_match) > 0:
-            check_word = buffer[ran[1] + 1:ran[1] + len(rest_of_match)].strip()
-            found_word = ''.join(rest_of_match).strip()
-            if check_word == found_word:
-                callback({'match': word + ''.join(rest_of_match), 'tupple': ran})
-
-    def get_children(self, tree, child_word, matches):
-        if tree:
-            if tree.is_final():
-                matches.append(child_word)
-                return
-            if len(tree._children) > 0:
-                for child in tree._children:
-                    matches.append(child_word)
-                    return self.get_children(tree.consume(child), child, matches)
-        else:
-            return child_word
+    def _get_rest(self, next_word, node):
+        next_node = node.consume(' ')
+        if next_node and node.is_final():
+            if next_node.consume(next_word):
+                return True
+        return False
 
 
 def main():
