@@ -112,12 +112,11 @@ class StringFinder:
                 if i < len(ranges):
                     tup = ranges[i]
                     next_word = buffer[tup[0]:tup[1]]
-                    rest = self._get_rest(next_word, node)
-                    if rest:
+                    if self._next_node(next_word, node):
                         callback({'match': word + next_word, 'tupple': (ran[0], tup[1])})
             i += 1
 
-    def _get_rest(self, next_word, node):
+    def _next_node(self, next_word, node):
         next_node = node.consume(' ')
         if next_node and node.is_final():
             if next_node.consume(next_word):
