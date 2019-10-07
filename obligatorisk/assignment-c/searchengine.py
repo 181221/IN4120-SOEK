@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# from collections import Counter
-# from utilities import Sieve
+from collections import Counter
+from utilities import Sieve
 from ranking import Ranker
 from corpus import Corpus
 from invertedindex import InvertedIndex
@@ -34,7 +34,26 @@ class SimpleSearchEngine:
         "document" (Document).
         """
 
+        terms = list(self._inverted_index.get_terms(query))
+
+        threshhold = options.get("match_threshold")
+
         # Print verbose debug information?
         debug = options.get("debug", False)
+        counter = Counter()
+        hit = options.get('hit_count')
+        sieve = Sieve(hit)
 
-        raise NotImplementedError()
+        m = len(terms)
+        n = max(1, min(m, int(threshhold * m)))
+
+        for term in terms:
+            postings = list(self._inverted_index.get_postings_iterator(term))
+            for post in postings:
+                counter[post.document_id] += 1
+                sieve.sift(counter[post.document_id], post.document_id)
+
+        for win in sieve.winners():
+            doc = self._corpus.get_document(win[1])
+            if win[0] >= n:
+                callback({'score': win[0], 'document': doc})

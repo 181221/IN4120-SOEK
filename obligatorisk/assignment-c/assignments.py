@@ -514,8 +514,8 @@ def assignment_c_simplesearchengine_3():
 
 def assignment_c():
     assignment_c_simplesearchengine_1()
-    assignment_c_simplesearchengine_2()
-    assignment_c_simplesearchengine_3()
+    #assignment_c_simplesearchengine_2()
+    #assignment_c_simplesearchengine_3()
 
 
 def assignment_d():
@@ -532,7 +532,7 @@ def main():
              "c": assignment_c,
              "d": assignment_d,
              "e": assignment_e}
-    assignments = sys.argv[1:] or ["a", "c"]
+    assignments = sys.argv[1:] or ["c"]
     for assignment in assignments:
         print("*** ASSIGNMENT", assignment.upper(), "***")
         tests[assignment.lower()]()
