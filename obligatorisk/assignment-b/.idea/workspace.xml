@@ -3,7 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="4e640db5-e677-4fcb-8fcb-264e83ff978f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/suffixarray.py" beforeDir="false" afterPath="$PROJECT_DIR$/suffixarray.py" afterDir="false" />
+=======
+>>>>>>> Stashed changes
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -154,9 +157,15 @@
       <workItem from="1569418428994" duration="1028000" />
       <workItem from="1569427056339" duration="14418000" />
       <workItem from="1569508386650" duration="85000" />
+<<<<<<< Updated upstream
       <workItem from="1569582488912" duration="7806000" />
       <workItem from="1569592493811" duration="9940000" />
       <workItem from="1569602871949" duration="7045000" />
+=======
+      <workItem from="1569534153838" duration="12000" />
+      <workItem from="1569534195099" duration="234000" />
+      <workItem from="1569534452370" duration="123000" />
+>>>>>>> Stashed changes
     </task>
     <task id="LOCAL-00001" summary="add ignore file">
       <created>1568886765753</created>
