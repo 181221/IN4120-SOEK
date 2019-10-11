@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
 from normalization import Normalizer, BrainDeadNormalizer
 from tokenization import BrainDeadTokenizer
 from corpus import Document, InMemoryDocument, Corpus, InMemoryCorpus
@@ -514,7 +511,7 @@ def assignment_c_simplesearchengine_3():
 
 def assignment_c():
     assignment_c_simplesearchengine_1()
-    #assignment_c_simplesearchengine_2()
+    assignment_c_simplesearchengine_2()
     #assignment_c_simplesearchengine_3()
 
 
