@@ -64,5 +64,25 @@ class ShingleGenerator(Tokenizer):
         The current implementation is simplistic and not whitespace- or punctuation-aware,
         and doesn't treat the beginning or end of the buffer in a special way.
         """
+        if len(buffer) == 0:
+            return [(0, 0)]
+        if len(buffer) < self._width:
+            return [(0, self._width - 1)]
+        arr = []
+        for index, char in enumerate(buffer):
+            end_string = index + self._width
+            if end_string <= len(buffer):
+                arr.append((index, end_string - 1))
+        return arr
 
-        raise NotImplementedError()
+
+def main():
+    """
+    Example usage. A tiny unit test, in a sense.
+    """
+    n_grams = ShingleGenerator(3)
+    n_grams.ranges("banan")
+
+
+if __name__ == "__main__":
+    main()
