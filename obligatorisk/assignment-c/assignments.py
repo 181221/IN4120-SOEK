@@ -394,6 +394,7 @@ def assignment_c_simplesearchengine_2():
         assert len(results) == n
 
     # Run tests!
+    
     search('baj BAJ    baj', 1.0, 27)
     check_hits(27)
     check_at(0, (9.0, 0))
@@ -529,7 +530,7 @@ def main():
              "c": assignment_c,
              "d": assignment_d,
              "e": assignment_e}
-    assignments = sys.argv[1:] or ["a", "c"]
+    assignments = sys.argv[1:] or ["c"]
     for assignment in assignments:
         print("*** ASSIGNMENT", assignment.upper(), "***")
         tests[assignment.lower()]()
