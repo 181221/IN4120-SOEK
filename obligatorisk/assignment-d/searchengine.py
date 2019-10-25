@@ -7,6 +7,7 @@ from ranking import Ranker
 from corpus import Corpus
 from invertedindex import InvertedIndex, Posting
 from typing import Callable, Any, Iterator
+from traversal import PostingsMerger
 
 
 class SimpleSearchEngine:
@@ -17,6 +18,7 @@ class SimpleSearchEngine:
     def __init__(self, corpus: Corpus, inverted_index: InvertedIndex):
         self._corpus = corpus
         self._inverted_index = inverted_index
+
 
     def evaluate(self, query: str, options: dict, ranker: Ranker, callback: Callable[[dict], Any]) -> None:
         """
@@ -38,79 +40,59 @@ class SimpleSearchEngine:
         terms = list(self._inverted_index.get_terms(query))
         threshhold = options.get("match_threshold")
         debug = options.get("debug", False)
-        counter = Counter()
-        counter_doc_id = Counter()
+        counter_terms = Counter(terms)
         hit = options.get('hit_count')
         sieve = Sieve(hit)
-        m = len(set(terms))
+        m = len(terms)
         n = max(1, min(m, int(threshhold * m)))
-        done_iter = hit == 1 and threshhold == 0.5
-        i = 0
-        postings_merged = self._inverted_index.get_postings_iterator(terms[0])
-        for term in terms:
-            if i < len(terms)-1:
-                sec = self._inverted_index.get_postings_iterator(terms[i + 1])
-                if n == m:  # intersection between the postings
-                    merged = self.and_postings(postings_merged, sec)
-                else:  # union between postings
-                    merged = self.or_postings(postings_merged, sec)
-                postings_merged = merged
-            if done_iter:
-                break
-            postings = self._inverted_index.get_postings_iterator(term)
-            for post in postings:  # ranking the postings
-                ranker.update(term, 1, post)
-                score = ranker.evaluate()
-                counter[post.document_id] += score  # score of document
-                counter_doc_id[post.document_id] += 1   # frequency of document, is used later for at least n out of m query words comparing
-                ranker.reset(post.document_id)
-            i += 1
 
-        for post in postings_merged:  # postings that will be evaluated
-            score = counter[post.document_id]
-            freq = counter_doc_id[post.document_id]
-            if n == m:  # if all query terms must be in results
-                if score >= n:  # terms with score higher than threshold
-                    sieve.sift(score, post.document_id)
-            elif freq >= n:  # if doc contain at least n out of m query words
-                sieve.sift(score, post.document_id)
+        class Aktiv(object):
+            def __init__(self, invertedindex, term, multiplicity):
+                self.term = term
+                self.iterator = invertedindex.get_postings_iterator(term)
+                self.posting = next(self.iterator, None)
+                self.multiplicity = multiplicity
+                self.hasBeenRanked = False
+
+            @property
+            def document_id(self):
+                return self.posting.document_id
+
+            def neste_posting(self):
+                self.posting = next(self.iterator, None)
+
+        aktive = []  # liste av posting liste-iteratorer
+
+        for term in terms:
+            aktiv = Aktiv(self._inverted_index, term, counter_terms[term])
+            if aktiv.posting is not None:
+                aktive.append(aktiv)
+        forrige_minste = None
+        while len(aktive) > 0:
+            (minste, index) = min((v.document_id, i) for i, v in enumerate(aktive))
+            current = aktive[index]
+            if minste != forrige_minste:
+                aktive_docids = [a for a in aktive if a.document_id == minste]
+                ranker.reset(current.document_id)
+                evaluated_terms = []
+                # må gå gjennom aktive_docids for å sjekke term og frequency
+                for a in aktive_docids:
+                    if a.term not in evaluated_terms:
+                        ranker.update(a.term, a.multiplicity, a.posting)
+                        evaluated_terms.append(a.term)
+                score = ranker.evaluate()
+                if threshhold == 1:
+                    if not len(aktive_docids) < n and score >= n:
+                        sieve.sift(score, minste)
+                else:
+                    if score >= n and len(aktive_docids) >= n:
+                        sieve.sift(score, minste)
+            forrige_minste = minste
+            current.neste_posting()
+            post = current.posting
+            if post is None:
+                aktive.pop(index)
 
         for win in sieve.winners(): # append the winners
             doc = self._corpus.get_document(win[1])
             callback({'score': win[0], 'document': doc})
-
-    def and_postings(self, p1: Iterator[Posting], p2: Iterator[Posting]) -> Iterator[Posting]:
-        current1 = next(p1, None)
-        current2 = next(p2, None)
-        while current1 and current2:
-            if current1.document_id == current2.document_id:
-                yield current1
-                current1 = next(p1, None)
-                current2 = next(p2, None)
-            elif current1.document_id < current2.document_id:
-                current1 = next(p1, None)
-            else:
-                current2 = next(p2, None)
-
-    def or_postings(self, p1: Iterator[Posting], p2: Iterator[Posting]) -> Iterator[Posting]:
-        current1 = next(p1, None)
-        current2 = next(p2, None)
-        while current1 and current2:
-            if current1.document_id == current2.document_id:
-                yield current1
-                current1 = next(p1, None)
-                current2 = next(p2, None)
-            elif current1.document_id < current2.document_id:
-                yield current1
-                current1 = next(p1, None)
-            else:
-                yield current2
-                current2 = next(p2, None)
-
-        while current1:
-            yield current1
-            current1 = next(p1, None)
-        while current2:
-            yield current2
-            current2 = next(p2, None)
-

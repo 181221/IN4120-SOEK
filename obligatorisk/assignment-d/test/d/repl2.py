@@ -7,7 +7,7 @@ def main():
     from tokenization import BrainDeadTokenizer
     from corpus import InMemoryCorpus
     from invertedindex import InMemoryInvertedIndex
-    from ranking import BetterRanker
+    from ranking import BetterRanker, BrainDeadRanker
     from searchengine import SimpleSearchEngine
     print("Indexing English news corpus...")
     normalizer = BrainDeadNormalizer()

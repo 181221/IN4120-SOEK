@@ -65,14 +65,14 @@ class ShingleGenerator(Tokenizer):
         and doesn't treat the beginning or end of the buffer in a special way.
         """
         if len(buffer) == 0:
-            return [(0, 0)]
+            return []
         if len(buffer) < self._width:
             return [(0, self._width - 1)]
         arr = []
         for index, char in enumerate(buffer):
             end_string = index + self._width
             if end_string <= len(buffer):
-                arr.append((index, end_string - 1))
+                arr.append((index, end_string))
         return arr
 
 
