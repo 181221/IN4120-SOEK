@@ -14,14 +14,11 @@ from typing import Callable, Any, Dict, Iterable
 class NaiveBayesClassifier:
     """
     Defines a multinomial naive Bayes text classifier.
+    Constructor. Trains the classifier from the named fields in the documents in
+    the given training set.
     """
-
     def __init__(self, training_set: Dict[str, Corpus], fields: Iterable[str],
                  normalizer: Normalizer, tokenizer: Tokenizer):
-        """
-        Constructor. Trains the classifier from the named fields in the documents in
-        the given training set.
-        """
 
         # Used for breaking the text up into discrete classification features.
         self._normalizer = normalizer
@@ -29,8 +26,42 @@ class NaiveBayesClassifier:
 
         # The vocabulary we've seen during training.
         self._vocabulary = InMemoryDictionary()
+        self.training_set = training_set
+        self.fields = fields
+        self.prior = {}
+        self.condprob = {}
+        self._train()
 
-        raise NotImplementedError()
+    def _train(self):
+        self._extractVocabulary()
+        N = 0
+        for _class in self.training_set:
+            N += self.training_set.get(_class).size()
+        for _class in self.training_set:
+            docs_in_class = self.training_set.get(_class).size()
+            self.prior[_class] = docs_in_class / N
+            text_of_docs_in_class = self._get_text_in_class(_class)
+            norm = self._get_terms(text_of_docs_in_class)
+            counter = Counter(norm)
+            for term in self._vocabulary:
+                result = (counter[term[0]] + 1 / len(norm) + self._vocabulary.size())
+                self.condprob[(term[0], _class)] = result
+
+    def _get_text_in_class(self, _class):
+        text_in_doc =""
+        for doc in self.training_set.get(_class):
+            for field in self.fields:
+                text_in_doc += " " + doc[field]
+        return text_in_doc
+
+    def _extractVocabulary(self):
+        content = ""
+        for key in self.training_set:
+            for doc in self.training_set.get(key):
+                for field in self.fields:
+                    content += " " + doc[field]
+        for term in self._get_terms(content):
+            self._vocabulary.add_if_absent(term)
 
     def _get_terms(self, buffer):
         """
@@ -49,5 +80,20 @@ class NaiveBayesClassifier:
         The callback function supplied by the client will receive a dictionary having the keys "score" (float) and
         "category" (str).
         """
+        terms = self._get_terms(buffer)
+        counter = Counter(terms)
+        W = []
+        score = {}
+        for term in terms:
+            if term in self._vocabulary:
+                W.append(term)
 
-        raise NotImplementedError()
+        for _class in self.training_set:
+            score[_class] = math.log(self.prior[_class])
+            for term in W:
+                score[_class] += math.log(self.condprob[(term, _class)])
+
+
+        for _class in score:
+            callback({"score": score[_class], "category": _class })
+
