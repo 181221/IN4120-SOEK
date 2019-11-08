@@ -44,7 +44,9 @@ class NaiveBayesClassifier:
             norm = self._get_terms(text_of_docs_in_class)
             counter = Counter(norm)
             for term in self._vocabulary:
-                result = (counter[term[0]] + 1 / len(norm) + self._vocabulary.size())
+                top = counter[term[0]] + 1
+                bottom = len(norm) + self._vocabulary.size()
+                result = top / bottom
                 self.condprob[(term[0], _class)] = result
 
     def _get_text_in_class(self, _class):
@@ -81,19 +83,17 @@ class NaiveBayesClassifier:
         "category" (str).
         """
         terms = self._get_terms(buffer)
-        counter = Counter(terms)
         W = []
-        score = {}
+        score = []
         for term in terms:
             if term in self._vocabulary:
                 W.append(term)
-
         for _class in self.training_set:
-            score[_class] = math.log(self.prior[_class])
+            score_class = math.log(self.prior[_class])
             for term in W:
-                score[_class] += math.log(self.condprob[(term, _class)])
-
-
-        for _class in score:
-            callback({"score": score[_class], "category": _class })
+                score_class += math.log(self.condprob[(term, _class)])
+            score.append((score_class, _class))
+        score.sort(key= lambda t: math.fabs(t[0]))
+        for score in score:
+            callback({"score": score[0], "category": score[1] })
 
